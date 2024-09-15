@@ -15,7 +15,7 @@ export default function LeaderboardPage() {
       {/* <h1 className="my-8 text-4xl font-bold text-center">Game Leaderboard</h1> */}
       {/* <AddScore /> */}
 
-    <Suspense>
+    <Suspense fallback={null}>
       <Leaderboard name={name}/>
     </Suspense>
     </div>
