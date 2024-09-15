@@ -162,7 +162,7 @@ export default function ChallengePage() {
         }
       };
   
-      submitScore();
+      // submitScore();
     }
   }, [playerName]);
 
@@ -221,12 +221,12 @@ export default function ChallengePage() {
                 autoPlay
               ></video>
             </div>
-            <button
+            {/* <button
               onClick={() => testQR()}
               className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
             >
               Start Scanning
-            </button>
+            </button> */}
             <button
               onClick={() => {
                 toggleChallenge();
@@ -251,18 +251,6 @@ export default function ChallengePage() {
               >
                 {countDown}
               </p>
-            </button>
-          </div>
-          <div className="flex flex-col text-black">
-            <div className="font-sans text-4xl text-htnblue">
-              insert lyrics here
-            </div>
-            <button
-              type="button"
-              className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg px-5 py-2.5 text-center me-2 mb-2 font-sans text-xl"
-              onClick={toggleModal}
-            >
-              Register Score
             </button>
           </div>
         </div>
@@ -307,7 +295,7 @@ export default function ChallengePage() {
                 <h3 className="mb-4 font-sans text-center text-xl font-semibold text-white">
                   Scan your QR card to join the leaderboard!
                 </h3>
-                <p className="self-center font-sans block text-center py-2 px-3 mt-1 mb-4 text-2xl font-bold bg-gray-700 border-white rounded-md text-cyan-400 focus:outline-none focus:ring-white focus:border-white">Your score is <span className="text-white">{lipAccuracy*100}%</span></p>
+                <p className="self-center font-sans block text-center py-2 px-3 mt-1 mb-4 text-2xl font-bold bg-gray-700 border-white rounded-md text-cyan-400 focus:outline-none focus:ring-white focus:border-white">Your score is <span className="text-white">{lipAccuracy*100}</span>%</p>
                   {/* <button
                     type="button"
                     onClick={toggleModal}
