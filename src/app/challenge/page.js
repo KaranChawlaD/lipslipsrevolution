@@ -112,16 +112,6 @@ export default function ChallengePage() {
     setScanIntervalVariable(scanInterval);
   }
 
-  const wrapLyricsWithSpans = (lyrics) => {
-    if (!lyrics) return "Pick a song";
-
-    return lyrics.split("").map((char, index) => (
-      <span key={index} class="character-span">
-        {char}
-      </span>
-    ));
-  };
-
   // https://stackoverflow.com/questions/53179075/with-useeffect-how-can-i-skip-applying-an-effect-upon-the-initial-render
   function useDidUpdateEffect(fn, inputs) {
     const isMountingRef = useRef(false);
@@ -164,10 +154,11 @@ export default function ChallengePage() {
   
         if (response.ok) {
           // Reset player name and accuracy if needed after successful submission
+          let playerN = playerName;
           setPlayerName(null);
           setLipAccuracy(-1.0);
 
-          router.push('/leaderboard');
+          router.push(`/leaderboard?name=${encodeURIComponent(playerN)}`);
         } else {
           console.error("Failed to submit the score");
         }
@@ -210,18 +201,18 @@ export default function ChallengePage() {
         {/* <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-black -z-10"></div> */}
 
         {/* Content */}
-        <div className={`${isLoading ? "blur motion-safe:animate-pulse" : "" } relative z-10 flex justify-around px-5 align-middle`}>
-          <div className="flex flex-col justify-center align-middle w-[40%] relative">
+        <div className={`${isLoading ? "blur motion-safe:animate-pulse" : "" } relative z-10 flex justify-around md:px-5 align-middle`}>
+          <div className="flex flex-col justify-center align-middle md:w-[40%] relative">
             <img
               src="/images/phoneframe4.png"
               alt="phone frame"
-              className="z-50 w-full px-32 py-12"
+              className="z-50 w-[400px] md:w-full md:px-32 md:py-12"
             />
-            <div className="absolute px-3 py-2 text-center bg-black opacity-40 font-sans text-white text-lg left-[9.5rem] right-[9.5rem] top-auto bottom-[6.5rem] z-40" >
-              {songSelection ? wrapLyricsWithSpans(data.find((song) => song.name === songSelection)?.lyrics) : "Pick a song"}
+            <div className="absolute px-3 py-2 text-center bg-black opacity-60 font-sans text-white text-lg md:left-[9.5rem] md:right-[9.5rem] left-[2rem] right-[2rem] top-auto bottom-[5.5rem] z-40" >
+              {songSelection ? (data.find((song) => song.name === songSelection)?.lyrics) : "Pick a song"}
             </div>
             <div
-              className={`absolute bg-black left-[8.5rem] right-[8.5rem] top-14 bottom-24 -z-10 rounded-[10%] ${
+              className={`absolute bg-black left-[0.5rem] right-[0.5rem] md:left-[8.5rem] md:right-[8.5rem] md:top-14 md:bottom-24 top-[3rem] bottom-[6rem] -z-10 rounded-[10%] ${
                 isBlurred ? "blur" : ""
               }`}
             >
@@ -300,12 +291,12 @@ export default function ChallengePage() {
         {isSongDone && (
           <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-50">
             <div className="w-[70%] md:w-1/3 p-6 bg-gray-800 rounded-lg">
-              <div className="flex flex-col align-center justify-center mt-4">
+              <div className="flex flex-col justify-center mt-4 align-center">
 
-                <h3 className="mb-4 font-sans text-center text-xl font-semibold text-white">
+                <h3 className="mb-4 font-sans text-xl font-semibold text-center text-white">
                   Scan your QR card to join the leaderboard!
                 </h3>
-                <p className="self-center font-sans block text-center py-2 px-3 mt-1 mb-4 text-2xl font-bold bg-gray-700 border-white rounded-md text-cyan-400 focus:outline-none focus:ring-white focus:border-white">Your score is <span className="text-white">{Math.round(lipAccuracy*100) > 0.0 ? `${Math.round(lipAccuracy*100)}%` : "Loading"}</span></p>
+                <p className="self-center block px-3 py-2 mt-1 mb-4 font-sans text-2xl font-bold text-center bg-gray-700 border-white rounded-md text-cyan-400 focus:outline-none focus:ring-white focus:border-white">Your score is <span className="text-white">{Math.round(lipAccuracy*100) > 0.0 ? `${Math.round(lipAccuracy*100)}%` : "Loading"}</span></p>
                   {/* <button
                     type="button"
                     onClick={toggleModal}
