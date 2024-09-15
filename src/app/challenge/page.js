@@ -196,7 +196,7 @@ export default function ChallengePage() {
         {/* <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-black -z-10"></div> */}
 
         {/* Content */}
-        <div className="relative z-10 flex justify-around px-5 mt-12 align-middle">
+        <div className="relative z-10 flex justify-around px-5 align-middle">
           <div className="flex flex-col justify-center align-middle w-[40%] relative">
             <img
               src="/images/phoneframe4.png"
