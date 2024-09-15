@@ -206,7 +206,7 @@ export default function ChallengePage() {
             <img
               src="/images/phoneframe4.png"
               alt="phone frame"
-              className="z-50 w-[400px] md:w-full md:px-32 md:py-12"
+              className="z-50 w-[400px] md:w-full md:px-32 md:py-11"
             />
             <div className="absolute px-3 py-2 text-center bg-black opacity-60 font-sans text-white text-lg md:left-[9.5rem] md:right-[9.5rem] left-[2rem] right-[2rem] top-auto bottom-[5.5rem] z-40" >
               {songSelection ? (data.find((song) => song.name === songSelection)?.lyrics) : "Pick a song"}
