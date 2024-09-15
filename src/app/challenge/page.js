@@ -8,22 +8,17 @@ import { isCompositeType } from "graphql";
 import data from "./songinfo";
 
 export default function ChallengePage() {
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChallengeOn, setIsChallengeOn] = useState(false);
   const [isBlurred, setIsBlurred] = useState(true);
-  const [qrCodeData, setQrCodeData] = useState(null);
-  const [qrCodeLastPart, setQrCodeLastPart] = useState(null);
   const [songSelection, setSongSelection] = useState(null);
   const [countDown, setCountDown] = useState(0);
-  const [canvas, setCanvas] = useState(null);
-  const [video, setVideo] = useState(null);
-  const [isSongDone, setIsSongDone] = useState(false);
+  const [isSongDone, setIsSongDone] = useState(true);
   const [lipPrediction, setLipPrediction] = useState(null);
   const [lipAccuracy, setLipAccuracy] = useState(0.0);
   const [scanIntervalVariable, setScanIntervalVariable] = useState(-1);
-  const [playerName, setPlayerName] = useState(null);
-  //const videoRef = useRef(null);
-  //const canvasRef = useRef(null);
+  const [playerName, setPlayerName] = useState("test");
+  const [isQrHidden, setIsQrHidden] = useState(true);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -44,14 +39,8 @@ export default function ChallengePage() {
   // };
 
   async function scanQrCode() {
+    const canvas = document.getElementById("mirror");
     if (canvas) {
-      // console.log(canvas);
-      //const canvas = canvasRef.current;
-
-      if (!canvas) {
-        console.error("Canvas element not found");
-        return;
-      }
 
       const context = canvas.getContext("2d");
       if (!context) {
@@ -87,15 +76,17 @@ export default function ChallengePage() {
 
       if (qrCode) {
         console.log("QR Code found:", qrCode.data);
-        setQrCodeData(qrCode.data);
-
+              
         const parts = qrCode.data.split("/");
+        console.log(parts);
         const lastPart = parts[parts.length - 1];
-        setQrCodeLastPart(lastPart);
+        console.log(lastPart);
         let pName = await getPlayerName(lastPart);
         console.log("pname", pName);
         setPlayerName(pName);
       }
+    } else {
+      console.error("Canvas not found");
     }
   };
 
@@ -111,20 +102,9 @@ export default function ChallengePage() {
     return data.name;
   }
 
-  function testQR() {
-    //const canvasElement = document.createElement("canvas");
-    const canvasElement = document.getElementById("mirror");
-    setCanvas(canvasElement);
-    setVideo(document.getElementById("cam"));
-
+  function startQR() {
     const scanInterval = setInterval(() => {
       scanQrCode();
-      // console.log(playerName)
-      // if (!!playerName) {
-      //   let temp = document.getElementById("mirror");
-      //   console.log(temp);
-      //   temp.remove();
-      // }
     }, 100);
     setScanIntervalVariable(scanInterval);
   }
@@ -160,15 +140,39 @@ export default function ChallengePage() {
     console.log(playerName)
     if (!!playerName) {
       clearInterval(scanIntervalVariable);
-      setIsSongDone(false);
+      console.log(playerName)
+      const submitScore = async () => {
+        // const timestamp = new Date().toISOString();  // Get current timestamp
+        const response = await fetch('/api/challenge', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: playerName, 
+            score: Math.round(parseFloat(lipAccuracy * 100)),  // Ensure score is accurate
+            // timestamp,  // Submit the timestamp
+          }),
+        });
+  
+        if (response.ok) {
+          // Reset player name and accuracy if needed after successful submission
+          setPlayerName(null);
+          setLipAccuracy(0.0);
+        } else {
+          console.error("Failed to submit the score");
+        }
+      };
+  
+      submitScore();
     }
   }, [playerName]);
 
   useEffect(() => {
     if (!isSongDone) return;
     alert(lipAccuracy);
-    testQR();
-    testQR();
+    
+    setPlayerName(null);
+    setIsQrHidden(false);
+    startQR();
   }, [isSongDone]);
   
   useEffect(() => {
@@ -296,9 +300,29 @@ export default function ChallengePage() {
           </div>
         )}
         {isSongDone && (
-          //<canvas></canvas>
-          <canvas id="mirror"></canvas>
+          <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="w-1/3 p-6 bg-gray-800 rounded-lg">
+              <div className="flex flex-col align-center justify-center mt-4">
+
+                <h3 className="mb-4 font-sans text-center text-xl font-semibold text-white">
+                  Scan your QR card to join the leaderboard!
+                </h3>
+                <p className="self-center font-sans block text-center py-2 px-3 mt-1 mb-4 text-2xl font-bold bg-gray-700 border-white rounded-md text-cyan-400 focus:outline-none focus:ring-white focus:border-white">Your score is <span className="text-white">{lipAccuracy*100}%</span></p>
+                  {/* <button
+                    type="button"
+                    onClick={toggleModal}
+                    className="px-4 py-2 ml-2 font-semibold bg-gray-700 rounded-lg text-cyan-400 hover:bg-cyan-400 hover:text-white"
+                  >
+                    Submit
+                  </button> */}
+                <canvas id="mirror" className={isQrHidden ? "hidden" : ""}></canvas>
+
+              </div>
+            </div>
+          </div>
         )}
+
+          {/* <canvas></canvas> */}
       </div>
     </>
   );
