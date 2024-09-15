@@ -47,7 +47,7 @@ export async function startChallenge(
 function playSong(fileName) {
   console.log("Playing song:", fileName);
   // play an mp3 url
-  const audio = new Audio(`./audio2/${fileName}.mp3`);
+  const audio = new Audio(`./audio/${fileName}.mp3`);
   audio.play();
 }
 
