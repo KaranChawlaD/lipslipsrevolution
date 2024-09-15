@@ -25,7 +25,7 @@ export default function Leaderboard() {
         {leaderboard.map((player, index) => (
           <li key={index} className="py-4 px-5 flex justify-between text-3xl font-sans text-white">
             <span>{index + 1}. {player.username}</span>
-            <span>{player.score}</span>
+            <span>{player.score}%</span>
           </li>
         ))}
       </ul>

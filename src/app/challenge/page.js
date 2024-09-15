@@ -20,6 +20,7 @@ export default function ChallengePage() {
   const [scanIntervalVariable, setScanIntervalVariable] = useState(-1);
   const [playerName, setPlayerName] = useState(null);
   const [isQrHidden, setIsQrHidden] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const toggleModal = () => {
@@ -29,7 +30,7 @@ export default function ChallengePage() {
 
   const toggleChallenge = () => {
     setIsChallengeOn(!isChallengeOn);
-    startChallenge(songSelection, setCountDown, setIsSongDone, setLipPrediction, setLipAccuracy);
+    startChallenge(songSelection, setCountDown, setIsSongDone, setLipPrediction, setLipAccuracy, setIsLoading);
   };
 
   // const stopScanning = () => {
@@ -209,7 +210,7 @@ export default function ChallengePage() {
         {/* <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-black -z-10"></div> */}
 
         {/* Content */}
-        <div className="relative z-10 flex justify-around px-5 align-middle">
+        <div className={`${isLoading ? "blur motion-safe:animate-pulse" : "" } relative z-10 flex justify-around px-5 align-middle`}>
           <div className="flex flex-col justify-center align-middle w-[40%] relative">
             <img
               src="/images/phoneframe4.png"
@@ -304,7 +305,7 @@ export default function ChallengePage() {
                 <h3 className="mb-4 font-sans text-center text-xl font-semibold text-white">
                   Scan your QR card to join the leaderboard!
                 </h3>
-                <p className="self-center font-sans block text-center py-2 px-3 mt-1 mb-4 text-2xl font-bold bg-gray-700 border-white rounded-md text-cyan-400 focus:outline-none focus:ring-white focus:border-white">Your score is <span className="text-white">{lipAccuracy*100}%</span></p>
+                <p className="self-center font-sans block text-center py-2 px-3 mt-1 mb-4 text-2xl font-bold bg-gray-700 border-white rounded-md text-cyan-400 focus:outline-none focus:ring-white focus:border-white">Your score is <span className="text-white">{Math.round(lipAccuracy*100) > 0.0 ? `${Math.round(lipAccuracy*100)}%` : "Loading"}</span></p>
                   {/* <button
                     type="button"
                     onClick={toggleModal}

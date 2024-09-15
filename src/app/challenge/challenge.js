@@ -10,7 +10,8 @@ export async function startChallenge(
   setCountDown,
   setIsSongDone,
   setLipPrediction,
-  setLipAccuracy
+  setLipAccuracy,
+  setIsLoading,
 ) {
   console.log("Challenge start");
   const song = data.find((song) => song.name === songName);
@@ -25,7 +26,11 @@ export async function startChallenge(
   await sleep(1);
   setCountDown(0);
 
-  let lipResult = await startSymphonic("cam", song.duration);
+  let lipResult = startSymphonic("cam", song.duration);
+  await sleep(song.duration);
+  setIsLoading(true);
+  [lipResult] = await Promise.all([lipResult]);
+  setIsLoading(false);
   console.log("Lip result:", lipResult);
   setLipPrediction(lipResult);
 
