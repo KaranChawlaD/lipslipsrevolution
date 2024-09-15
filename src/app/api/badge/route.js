@@ -19,7 +19,7 @@ export async function GET(req) {
 async function getName(code) {
     const token = process.env.HTN_TOKEN;
 
-    if (code == "support-wod-might-cook") {
+    if (code == "support-wad-might-cook") {
         return "Lucas Jin";
     }
 

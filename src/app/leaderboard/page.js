@@ -1,5 +1,4 @@
 import Leaderboard from './leaderboard';
-import AddScore from './add-score';
 import Head from 'next/head';
 
 

@@ -16,7 +16,6 @@ export async function POST(req) {
   const collection = db.collection('scores');
   
   const { username, score } = await req.json();
-  
   await collection.insertOne({ username, score, timestamp: new Date() });
   
   return new Response(JSON.stringify({ message: 'Score added' }), { status: 201 });

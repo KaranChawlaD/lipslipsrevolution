@@ -7,7 +7,7 @@ export default function Leaderboard() {
 
   useEffect(() => {
     async function fetchLeaderboard() {
-      const res = await fetch('/api/leaderboard');
+      const res = await fetch('/api/challenge');
       const data = await res.json();
       setLeaderboard(data);
     }

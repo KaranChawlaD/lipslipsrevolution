@@ -10,8 +10,11 @@ export async function POST(req) {
     return new Response(JSON.stringify({ok: false, error: "Missing required fields `a`, `b`"}), { status: 400 });
   }
 
-  const embedding1 = (await getEmbedding(a)).data[0].embedding;
-  const embedding2 = (await getEmbedding(b)).data[0].embedding;
+  const cleana = cleanText(a);
+  const cleanb = cleanText(b);
+
+  const embedding1 = (await getEmbedding(cleana)).data[0].embedding;
+  const embedding2 = (await getEmbedding(cleanb)).data[0].embedding;
 
   const similarity = await compareEmbeddings(embedding1, embedding2);
   const result = {
@@ -31,4 +34,12 @@ async function getEmbedding(text) {
 
 async function compareEmbeddings(embedding1, embedding2) {
     return similarity(embedding1, embedding2);
+}
+
+function cleanText(text) {
+  return text
+    .toLowerCase()
+    .replace(/[\p{P}]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim();                   
 }
