@@ -17,7 +17,10 @@ export async function startChallenge(
   const song = data.find((song) => song.name === songName);
   console.log(songName, song);
   playSong(songName);
-  await sleep(song.delay - 2);
+  setCountDown(5);
+  await sleep(1);
+  setCountDown(4);
+  await sleep(1);
   setCountDown(3);
   await sleep(1);
   setCountDown(2);

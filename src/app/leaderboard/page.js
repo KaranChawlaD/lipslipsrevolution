@@ -1,13 +1,20 @@
+"use client";
+
 import Leaderboard from './leaderboard';
-import Head from 'next/head';
+
+import { Suspense } from 'react'
 
 
 export default function LeaderboardPage() {
+
   return (
-      <div className="container mx-auto">
-        {/* <h1 className="text-center text-4xl font-bold my-8">Game Leaderboard</h1> */}
-        {/* <AddScore /> */}
-        <Leaderboard />
-      </div>
+    <div className="container mx-auto">
+      {/* <h1 className="my-8 text-4xl font-bold text-center">Game Leaderboard</h1> */}
+      {/* <AddScore /> */}
+
+    <Suspense fallback={<p>Loading...</p>}>
+      <Leaderboard/>
+    </Suspense>
+    </div>
   );
 }
