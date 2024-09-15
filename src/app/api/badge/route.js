@@ -44,6 +44,7 @@ async function getName(code) {
       })
     
     const data = await resp.json();
+    console.log(data);
     const name = data?.data?.handleNetworkingScan?.hackerNetworkingPayload?.name;
     return name;
 }

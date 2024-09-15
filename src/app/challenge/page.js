@@ -6,19 +6,21 @@ import jsQR from "jsqr";
 import { startChallenge } from "./challenge";
 import { isCompositeType } from "graphql";
 import data from "./songinfo";
+import { useRouter } from 'next/navigation';
 
 export default function ChallengePage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(true);
   const [isChallengeOn, setIsChallengeOn] = useState(false);
   const [isBlurred, setIsBlurred] = useState(true);
   const [songSelection, setSongSelection] = useState(null);
   const [countDown, setCountDown] = useState(0);
-  const [isSongDone, setIsSongDone] = useState(true);
+  const [isSongDone, setIsSongDone] = useState(false);
   const [lipPrediction, setLipPrediction] = useState(null);
-  const [lipAccuracy, setLipAccuracy] = useState(0.0);
+  const [lipAccuracy, setLipAccuracy] = useState(-1.0);
   const [scanIntervalVariable, setScanIntervalVariable] = useState(-1);
-  const [playerName, setPlayerName] = useState("test");
+  const [playerName, setPlayerName] = useState(null);
   const [isQrHidden, setIsQrHidden] = useState(true);
+  const router = useRouter();
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -141,6 +143,12 @@ export default function ChallengePage() {
     if (!!playerName) {
       clearInterval(scanIntervalVariable);
       console.log(playerName)
+
+      // Prevent negative scores
+      if (lipAccuracy <= 0.0) {
+        return;
+      }
+
       const submitScore = async () => {
         // const timestamp = new Date().toISOString();  // Get current timestamp
         const response = await fetch('/api/challenge', {
@@ -156,7 +164,9 @@ export default function ChallengePage() {
         if (response.ok) {
           // Reset player name and accuracy if needed after successful submission
           setPlayerName(null);
-          setLipAccuracy(0.0);
+          setLipAccuracy(-1.0);
+
+          router.push('/leaderboard');
         } else {
           console.error("Failed to submit the score");
         }
@@ -168,7 +178,6 @@ export default function ChallengePage() {
 
   useEffect(() => {
     if (!isSongDone) return;
-    alert(lipAccuracy);
     
     setPlayerName(null);
     setIsQrHidden(false);
@@ -195,12 +204,12 @@ export default function ChallengePage() {
   return (
     <>
       <img className="mt-4 ml-8 h-[63px]" alt="logo" src="/images/logo.png"></img>
-      <div className="relative min-h-screen overflow-hidden bg-black">
+      <div className="relative overflow-hidden bg-black">
         {/* Blurred Background */}
         {/* <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-black -z-10"></div> */}
 
         {/* Content */}
-        <div className="relative z-10 flex justify-around px-5 mt-12 align-middle">
+        <div className="relative z-10 flex justify-around px-5 align-middle">
           <div className="flex flex-col justify-center align-middle w-[40%] relative">
             <img
               src="/images/phoneframe4.png"
@@ -221,12 +230,12 @@ export default function ChallengePage() {
                 autoPlay
               ></video>
             </div>
-            <button
+            {/* <button
               onClick={() => testQR()}
               className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
             >
               Start Scanning
-            </button>
+            </button> */}
             <button
               onClick={() => {
                 toggleChallenge();
@@ -253,25 +262,13 @@ export default function ChallengePage() {
               </p>
             </button>
           </div>
-          <div className="flex flex-col text-black">
-            <div className="font-sans text-4xl text-htnblue">
-              insert lyrics here
-            </div>
-            <button
-              type="button"
-              className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg px-5 py-2.5 text-center me-2 mb-2 font-sans text-xl"
-              onClick={toggleModal}
-            >
-              Register Score
-            </button>
-          </div>
         </div>
 
         {/* Modal */}
 
         {isModalOpen && (
           <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-1/3 p-6 bg-gray-800 rounded-lg">
+            <div className="w-[70%] md:w-1/3 p-6 bg-gray-800 rounded-lg">
               <h3 className="mb-4 font-sans text-xl font-semibold text-white">
                 Choose your song!
               </h3>
@@ -301,7 +298,7 @@ export default function ChallengePage() {
         )}
         {isSongDone && (
           <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-1/3 p-6 bg-gray-800 rounded-lg">
+            <div className="w-[70%] md:w-1/3 p-6 bg-gray-800 rounded-lg">
               <div className="flex flex-col align-center justify-center mt-4">
 
                 <h3 className="mb-4 font-sans text-center text-xl font-semibold text-white">
